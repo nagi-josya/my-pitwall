@@ -11,9 +11,10 @@ public sealed class SessionsController(SessionQueryService sessionQueryService) 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<SessionSummaryResponse>>> GetSessions(
         [FromQuery] int year = 2024,
+        [FromQuery] int? meetingKey = null,
         CancellationToken cancellationToken = default)
     {
-        var sessions = await sessionQueryService.GetSessionsAsync(year, cancellationToken);
+        var sessions = await sessionQueryService.GetSessionsAsync(year, meetingKey, cancellationToken);
 
         return Ok(sessions);
     }

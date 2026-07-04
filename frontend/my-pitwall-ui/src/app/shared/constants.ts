@@ -1,0 +1,1 @@
+export const AVAILABLE_YEARS = [2023, 2024, 2025];

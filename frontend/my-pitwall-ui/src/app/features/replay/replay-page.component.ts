@@ -1,7 +1,8 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DriverPanelComponent } from '../driver-panel/driver-panel.component';
 import { RaceEventsFeedComponent } from '../race-events/race-events-feed.component';
+import { SessionSelectorComponent } from '../session-selector/session-selector.component';
 import { TimingTowerComponent } from '../timing-tower/timing-tower.component';
 import { TrackMapComponent } from '../track-map/track-map.component';
 import { ReplayFacade } from './replay.facade';
@@ -9,7 +10,7 @@ import { ReplayFacade } from './replay.facade';
 @Component({
   selector: 'app-replay-page',
   standalone: true,
-  imports: [AsyncPipe, TimingTowerComponent, TrackMapComponent, DriverPanelComponent, RaceEventsFeedComponent],
+  imports: [AsyncPipe, JsonPipe, SessionSelectorComponent, TimingTowerComponent, TrackMapComponent, DriverPanelComponent, RaceEventsFeedComponent],
   providers: [ReplayFacade],
   template: `
     <main class="pitwall-shell">
@@ -29,6 +30,19 @@ import { ReplayFacade } from './replay.facade';
         </div>
       </header>
 
+      <section class="selector-bar">
+        <app-session-selector
+          [selectedYear]="(facade.selectedYear$ | async) ?? 2024"
+          [selectedMeetingKey]="facade.selectedMeetingKey$ | async"
+          [selectedSessionKey]="facade.selectedSessionKey$ | async"
+          [meetings]="(facade.meetings$ | async) ?? []"
+          [sessions]="(facade.sessions$ | async) ?? []"
+          (yearChange)="facade.selectYear($event)"
+          (meetingChange)="facade.selectMeeting($event)"
+          (sessionChange)="facade.selectSession($event)"
+        />
+      </section>
+
       @if (facade.frame$ | async; as frame) {
         <section class="dashboard">
           <app-timing-tower
@@ -42,10 +56,15 @@ import { ReplayFacade } from './replay.facade';
           <app-driver-panel [driver]="facade.selectedDriver$ | async" />
           <app-race-events-feed [events]="frame.events" />
         </section>
-      } @else {
+      } @else if (facade.selectedSessionKey$ | async) {
         <section class="loading-panel">
           <h2>Loading replay data</h2>
           <p>Fetching the opening frame from the pitwall backend.</p>
+        </section>
+      } @else {
+        <section class="loading-panel">
+          <h2>Select a session</h2>
+          <p>Choose a year, race, and session above to begin.</p>
         </section>
       }
     </main>

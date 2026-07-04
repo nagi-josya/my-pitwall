@@ -7,10 +7,14 @@ namespace MyPitwall.Infrastructure.OpenF1;
 
 public sealed class OpenF1DataProvider(HttpClient httpClient) : IF1DataProvider
 {
-    public async Task<IReadOnlyList<OpenF1SessionDto>> GetSessionsAsync(int year, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<OpenF1SessionDto>> GetSessionsAsync(int year, int? meetingKey = null, CancellationToken cancellationToken = default)
     {
+        var url = meetingKey.HasValue
+            ? $"sessions?year={year}&meeting_key={meetingKey.Value}"
+            : $"sessions?year={year}";
+
         var sessions = await httpClient.GetFromJsonAsync<IReadOnlyList<OpenF1SessionResponse>>(
-            $"sessions?year={year}",
+            url,
             cancellationToken);
 
         return (IReadOnlyList<OpenF1SessionDto>?)sessions?
