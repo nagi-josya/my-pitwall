@@ -1,0 +1,6 @@
+@MyPitwall.Api_HostAddress = http://localhost:5170
+
+GET {{MyPitwall.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

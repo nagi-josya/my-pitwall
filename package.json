@@ -1,0 +1,16 @@
+{
+  "name": "my-pitwall",
+  "version": "1.0.0",
+  "description": "My Pitwall is a fan-friendly Formula 1 historical replay tracker built with a .NET backend and Angular frontend.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

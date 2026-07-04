@@ -1,0 +1,100 @@
+.pitwall-shell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.top-bar {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin: 0 auto 20px;
+  max-width: 1440px;
+}
+
+.eyebrow {
+  color: #00d2be;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 0.95;
+  margin: 0;
+}
+
+.replay-controls {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.replay-controls button,
+.replay-controls select {
+  background: #f4f4f2;
+  border: 0;
+  border-radius: 6px;
+  color: #15161a;
+  min-height: 40px;
+  padding: 0 14px;
+}
+
+.dashboard {
+  display: grid;
+  gap: 14px;
+  grid-template-areas:
+    "tower map"
+    "driver events";
+  grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
+  grid-template-rows: minmax(480px, 62vh) auto;
+  margin: 0 auto;
+  max-width: 1440px;
+}
+
+.dashboard > app-timing-tower {
+  grid-area: tower;
+  min-height: 0;
+}
+
+.dashboard > app-track-map {
+  grid-area: map;
+  min-height: 0;
+}
+
+.dashboard > app-driver-panel {
+  grid-area: driver;
+}
+
+.dashboard > app-race-events-feed {
+  grid-area: events;
+}
+
+.loading-panel {
+  margin: 15vh auto 0;
+  max-width: 560px;
+}
+
+@media (max-width: 900px) {
+  .pitwall-shell {
+    padding: 14px;
+  }
+
+  .top-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard {
+    grid-template-areas:
+      "tower"
+      "map"
+      "driver"
+      "events";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 420px auto auto;
+  }
+}
