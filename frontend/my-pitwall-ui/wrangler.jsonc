@@ -1,8 +1,11 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "my-pitwall",
+  "main": "src/worker.js",
   "compatibility_date": "2026-07-06",
+
   "assets": {
-    "directory": "./dist/my-pitwall-ui/browser"
+    "directory": "./dist/my-pitwall-ui/browser",
+    "binding": "ASSETS"
   }
 }
