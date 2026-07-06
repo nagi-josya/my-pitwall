@@ -42,6 +42,10 @@ jobs:
           sed -i "s|localhost:5170/api|$API_BASE_URL|g" src/environments/environment.ts
           npx ng build --configuration production
 
+      - name: Show build output
+        run: |
+          ls -R frontend/my-pitwall-ui/dist
+          
       - name: Deploy frontend to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
