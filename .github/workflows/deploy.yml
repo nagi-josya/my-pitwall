@@ -60,9 +60,10 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages project list
 
-      - name: Deploy frontend to Cloudflare Pages
+      - name: Deploy frontend
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy frontend/my-pitwall-ui/dist/my-pitwall-ui/browser --project-name=my-pitwall
+          workingDirectory: frontend/my-pitwall-ui
+          command: deploy
