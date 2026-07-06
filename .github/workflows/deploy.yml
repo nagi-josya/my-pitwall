@@ -47,4 +47,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy frontend/my-pitwall-ui/dist/my-pitwall-ui/browser --project-name=my-pitwall-ui
+          command: pages deploy frontend/my-pitwall-ui/dist/my-pitwall-ui/browser --project-name=my-pitwall
