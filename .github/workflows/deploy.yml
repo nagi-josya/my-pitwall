@@ -45,7 +45,21 @@ jobs:
       - name: Show build output
         run: |
           ls -R frontend/my-pitwall-ui/dist
-          
+
+      - name: Verify Cloudflare Authentication
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: whoami
+
+      - name: List Cloudflare Pages Projects
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project list
+
       - name: Deploy frontend to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
