@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { DriverCareer, ReplayFrame } from '../../shared/models/replay-frame.model';
 import { MeetingSummary, SessionSummary } from '../../shared/models/session-summary.model';
 import { ChampionshipStandings } from '../../shared/models/standings.model';
 
 @Injectable({ providedIn: 'root' })
 export class PitwallApiService {
-  private readonly baseUrl = 'http://localhost:5170/api';
+  private readonly baseUrl = environment.apiBaseUrl;
 
   constructor(private readonly http: HttpClient) {}
 

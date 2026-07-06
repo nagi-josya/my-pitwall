@@ -1,0 +1,59 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.x'
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Build backend
+        run: |
+          dotnet restore backend/MyPitwall.sln
+          dotnet publish backend/MyPitwall.sln -c Release -o publish/backend
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Build frontend
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL || 'http://localhost:5170/api' }}
+        run: |
+          cd frontend/my-pitwall-ui
+          npm ci
+          sed -i "s|localhost:5170/api|$API_BASE_URL|g" src/environments/environment.ts
+          npx ng build --configuration production
+
+      - name: Deploy frontend to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy frontend/my-pitwall-ui/dist/my-pitwall-ui/browser --project-name=my-pitwall-ui
+
+      - name: Deploy backend to Azure App Service
+        if: ${{ secrets.AZURE_WEBAPP_NAME != '' }}
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: publish/backend
