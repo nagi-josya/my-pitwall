@@ -66,4 +66,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: frontend/my-pitwall-ui
+          wranglerVersion: "4.107.0"
           command: deploy
