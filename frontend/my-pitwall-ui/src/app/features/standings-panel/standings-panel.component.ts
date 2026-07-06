@@ -7,7 +7,7 @@ import { ChampionshipDriver, ChampionshipTeam } from '../../shared/models/standi
   template: `
     <aside class="standings-panel">
       <div class="section">
-        <h3>Drivers</h3>
+        <h3>WDC</h3>
         <div class="standings-grid">
           @for (driver of drivers; track driver.driverNumber) {
             <div class="row">
@@ -21,7 +21,7 @@ import { ChampionshipDriver, ChampionshipTeam } from '../../shared/models/standi
         </div>
       </div>
       <div class="section">
-        <h3>Constructors</h3>
+        <h3>WCC</h3>
         <div class="standings-grid">
           @for (team of teams; track team.teamName) {
             <div class="row">
