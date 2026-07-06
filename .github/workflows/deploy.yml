@@ -6,7 +6,7 @@ on:
 
 env:
   DOTNET_VERSION: '8.x'
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   build-and-deploy:
@@ -46,25 +46,19 @@ jobs:
         run: |
           ls -R frontend/my-pitwall-ui/dist
 
-      - name: Verify Cloudflare Authentication
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: whoami
+      - name: Install Wrangler
+        run: npm install -g wrangler@4.107.0
 
-      - name: List Cloudflare Pages Projects
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages project list
+      - name: Verify versions
+        run: |
+          node --version
+          npm --version
+          wrangler --version
 
       - name: Deploy frontend
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: frontend/my-pitwall-ui
-          wranglerVersion: "4.107.0"
-          command: deploy
+        working-directory: frontend/my-pitwall-ui
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          wrangler deploy
