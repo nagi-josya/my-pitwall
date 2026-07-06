@@ -11,6 +11,7 @@ public static class DependencyInjection
         services.AddScoped<ReplayFrameFactory>();
         services.AddScoped<SessionQueryService>();
         services.AddScoped<MeetingQueryService>();
+        services.AddScoped<StandingsService>();
 
         return services;
     }

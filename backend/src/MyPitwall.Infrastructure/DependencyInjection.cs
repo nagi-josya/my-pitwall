@@ -14,6 +14,9 @@ public static class DependencyInjection
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        services.AddSingleton<ManualDriverCareerProvider>();
+        services.AddSingleton<IDriverCareerProvider, WikipediaDriverCareerProvider>();
+
         return services;
     }
 }

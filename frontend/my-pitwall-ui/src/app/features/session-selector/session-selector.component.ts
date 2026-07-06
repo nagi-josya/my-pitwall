@@ -43,10 +43,13 @@ import { AVAILABLE_YEARS } from '../../shared/constants';
         >
           <option value="" disabled>Select session</option>
           @for (session of sessions; track session.sessionKey) {
-            <option [value]="session.sessionKey">
+            <option [value]="session.sessionKey" [disabled]="!session.isCompleted">
               {{ session.sessionName }}
               @if (session.startDate) {
                 — {{ session.startDate | date:'shortDate' }}
+              }
+              @if (!session.isCompleted) {
+                (Not yet completed)
               }
             </option>
           }

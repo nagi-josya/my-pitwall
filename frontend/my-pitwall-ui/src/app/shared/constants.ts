@@ -1,1 +1,4 @@
-export const AVAILABLE_YEARS = [2023, 2024, 2025];
+const currentYear = new Date().getFullYear();
+const firstAvailableYear = 2023;
+const yearCount = Math.max(0, currentYear - firstAvailableYear + 1);
+export const AVAILABLE_YEARS = Array.from({ length: yearCount }, (_, i) => firstAvailableYear + i);

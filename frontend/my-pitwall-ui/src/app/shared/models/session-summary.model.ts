@@ -14,4 +14,5 @@ export interface SessionSummary {
   location: string;
   sessionName: string;
   startDate: string | null;
+  isCompleted: boolean;
 }

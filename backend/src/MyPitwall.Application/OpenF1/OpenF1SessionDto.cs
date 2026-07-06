@@ -7,4 +7,5 @@ public sealed record OpenF1SessionDto(
     string CountryName,
     string Location,
     string SessionName,
-    DateTimeOffset? StartDate);
+    DateTimeOffset? StartDate,
+    DateTimeOffset? EndDate);

@@ -1,3 +1,10 @@
+export interface DriverCareer {
+  debutYear: number;
+  podiums: number;
+  highestFinish: number;
+  championshipYears: number[] | null;
+}
+
 export interface ReplayFrame {
   sessionKey: number;
   sessionTime: string;
@@ -12,6 +19,7 @@ export interface DriverFrame {
   fullName: string;
   teamName: string;
   teamColor: string;
+  headshotUrl: string | null;
   position: number | null;
   gapToLeader: string | null;
   intervalToCarAhead: string | null;

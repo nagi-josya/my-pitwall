@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ReplayFrame } from '../../shared/models/replay-frame.model';
+import { DriverCareer, ReplayFrame } from '../../shared/models/replay-frame.model';
 import { MeetingSummary, SessionSummary } from '../../shared/models/session-summary.model';
+import { ChampionshipStandings } from '../../shared/models/standings.model';
 
 @Injectable({ providedIn: 'root' })
 export class PitwallApiService {
-  private readonly baseUrl = 'https://localhost:7009/api';
+  private readonly baseUrl = 'http://localhost:5170/api';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -26,6 +27,20 @@ export class PitwallApiService {
     return this.http.post<ReplayFrame>(`${this.baseUrl}/replays/preview`, {
       sessionKey,
       speed: 1
+    });
+  }
+
+  getStatus(): Observable<{ openf1Message: string | null }> {
+    return this.http.get<{ openf1Message: string | null }>(`${this.baseUrl}/status`);
+  }
+
+  getDriverCareer(sessionKey: number, driverNumber: number): Observable<DriverCareer | null> {
+    return this.http.get<DriverCareer | null>(`${this.baseUrl}/replays/${sessionKey}/drivers/${driverNumber}/career`);
+  }
+
+  getStandings(sessionKey: number): Observable<ChampionshipStandings> {
+    return this.http.get<ChampionshipStandings>(`${this.baseUrl}/standings`, {
+      params: { sessionKey }
     });
   }
 }

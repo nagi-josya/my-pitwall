@@ -1,36 +1,31 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { DriverGridComponent } from '../driver-grid/driver-grid.component';
 import { DriverPanelComponent } from '../driver-panel/driver-panel.component';
 import { RaceEventsFeedComponent } from '../race-events/race-events-feed.component';
 import { SessionSelectorComponent } from '../session-selector/session-selector.component';
-import { TimingTowerComponent } from '../timing-tower/timing-tower.component';
-import { TrackMapComponent } from '../track-map/track-map.component';
+import { StandingsPanelComponent } from '../standings-panel/standings-panel.component';
 import { ReplayFacade } from './replay.facade';
+import { PitwallApiService } from '../../core/api/pitwall-api.service';
 
 @Component({
   selector: 'app-replay-page',
   standalone: true,
-  imports: [AsyncPipe, JsonPipe, SessionSelectorComponent, TimingTowerComponent, TrackMapComponent, DriverPanelComponent, RaceEventsFeedComponent],
+  imports: [AsyncPipe, SessionSelectorComponent, DriverGridComponent, DriverPanelComponent, RaceEventsFeedComponent, StandingsPanelComponent],
   providers: [ReplayFacade],
   template: `
     <main class="pitwall-shell">
       <header class="top-bar">
         <div>
-          <p class="eyebrow">Historical Replay</p>
-          <h1>My Pitwall</h1>
-        </div>
-        <div class="replay-controls">
-          <button type="button">Play</button>
-          <button type="button">Pause</button>
-          <select aria-label="Replay speed">
-            <option>1x</option>
-            <option>2x</option>
-            <option>5x</option>
-          </select>
+          <p class="eyebrow">Learn about F1 stats throughout the years</p>
+          <h1>Anndddd it's lights out!!!</h1>
         </div>
       </header>
 
       <section class="selector-bar">
+        @if (openf1Message(); as msg) {
+          <div class="openf1-warning">{{ msg }}</div>
+        }
         <app-session-selector
           [selectedYear]="(facade.selectedYear$ | async) ?? 2024"
           [selectedMeetingKey]="facade.selectedMeetingKey$ | async"
@@ -43,35 +38,62 @@ import { ReplayFacade } from './replay.facade';
         />
       </section>
 
-      @if (facade.frame$ | async; as frame) {
-        <section class="dashboard">
-          <app-timing-tower
-            [drivers]="frame.drivers"
-            (driverSelected)="facade.selectDriver($event)"
-          />
-          <app-track-map
-            [drivers]="frame.drivers"
-            (driverSelected)="facade.selectDriver($event)"
-          />
-          <app-driver-panel [driver]="facade.selectedDriver$ | async" />
-          <app-race-events-feed [events]="frame.events" />
-        </section>
-      } @else if (facade.selectedSessionKey$ | async) {
+      @if (facade.incompleteSessionName$ | async; as sessionName) {
         <section class="loading-panel">
-          <h2>Loading replay data</h2>
-          <p>Fetching the opening frame from the pitwall backend.</p>
+          <h2>Session not yet completed</h2>
+          <p>
+            Results can only be viewed for completed sessions.
+            "{{ sessionName }}" has not finished yet — check back after the session ends.
+          </p>
         </section>
       } @else {
-        <section class="loading-panel">
-          <h2>Select a session</h2>
-          <p>Choose a year, race, and session above to begin.</p>
-        </section>
+        @if (facade.frame$ | async; as frame) {
+          <section class="dashboard">
+            <app-standings-panel
+              [drivers]="(facade.standings$ | async)?.drivers ?? []"
+              [teams]="(facade.standings$ | async)?.teams ?? []"
+            />
+            <div class="main-panel">
+              <app-driver-grid
+                [drivers]="frame.drivers"
+                (driverSelected)="facade.selectDriver($event)"
+              />
+              <app-race-events-feed [events]="frame.events" />
+              <app-driver-panel
+                [driver]="facade.selectedDriver$ | async"
+                [career]="facade.selectedDriverCareer$ | async"
+              />
+            </div>
+          </section>
+        } @else if (facade.selectedSessionKey$ | async) {
+          <section class="loading-panel">
+            <h2>Loading replay data</h2>
+            <p>Fetching the opening frame from the pitwall backend.</p>
+          </section>
+        } @else {
+          <section class="loading-panel">
+            <h2>Select a session</h2>
+            <p>Choose a year, race, and session above to begin.</p>
+          </section>
+        }
       }
     </main>
   `,
   styleUrl: './replay-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReplayPageComponent {
-  constructor(readonly facade: ReplayFacade) {}
+export class ReplayPageComponent implements OnInit {
+  readonly openf1Message = signal<string | null>(null);
+
+  constructor(
+    readonly facade: ReplayFacade,
+    private readonly api: PitwallApiService
+  ) {}
+
+  ngOnInit(): void {
+    this.api.getStatus().subscribe({
+      next: (status) => this.openf1Message.set(status.openf1Message),
+      error: () => this.openf1Message.set('Failed to check API status.')
+    });
+  }
 }

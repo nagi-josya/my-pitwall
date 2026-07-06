@@ -3,7 +3,8 @@ import { BehaviorSubject, catchError, combineLatest, map, of, startWith, switchM
 import { PitwallApiService } from '../../core/api/pitwall-api.service';
 import { ReplayHubService } from '../../core/signalr/replay-hub.service';
 import { MeetingSummary, SessionSummary } from '../../shared/models/session-summary.model';
-import { AVAILABLE_YEARS } from '../../shared/constants';
+import { ChampionshipStandings } from '../../shared/models/standings.model';
+import { DriverCareer } from '../../shared/models/replay-frame.model';
 
 @Injectable()
 export class ReplayFacade {
@@ -20,7 +21,8 @@ export class ReplayFacade {
   readonly meetings$ = this.selectedYearSubject.pipe(
     switchMap((year) =>
       this.api.getMeetings(year).pipe(
-        startWith([] as MeetingSummary[])
+        startWith([] as MeetingSummary[]),
+        catchError(() => of([] as MeetingSummary[]))
       )
     )
   );
@@ -32,14 +34,26 @@ export class ReplayFacade {
       }
       const year = this.selectedYearSubject.getValue();
       return this.api.getSessions(year, meetingKey).pipe(
-        startWith([] as SessionSummary[])
+        startWith([] as SessionSummary[]),
+        catchError(() => of([] as SessionSummary[]))
       );
     })
   );
 
-  readonly frame$ = this.selectedSessionKeySubject.pipe(
-    switchMap((sessionKey) => {
+  readonly selectedSession$ = combineLatest([this.sessions$, this.selectedSessionKey$]).pipe(
+    map(([sessions, sessionKey]) => sessions.find(s => s.sessionKey === sessionKey) ?? null)
+  );
+
+  readonly incompleteSessionName$ = this.selectedSession$.pipe(
+    map(session => session && !session.isCompleted ? session.sessionName : null)
+  );
+
+  readonly frame$ = combineLatest([this.selectedSessionKey$, this.incompleteSessionName$]).pipe(
+    switchMap(([sessionKey, incompleteSessionName]) => {
       if (sessionKey === null) {
+        return of(null);
+      }
+      if (incompleteSessionName) {
         return of(null);
       }
       return this.api.previewReplay(sessionKey).pipe(
@@ -47,6 +61,18 @@ export class ReplayFacade {
           this.hub.publishPreviewFrame(frame);
           return frame;
         }),
+        catchError(() => of(null))
+      );
+    }),
+    startWith(null)
+  );
+
+  readonly standings$ = combineLatest([this.selectedSessionKey$, this.incompleteSessionName$]).pipe(
+    switchMap(([sessionKey, incompleteSessionName]) => {
+      if (sessionKey === null || incompleteSessionName) {
+        return of(null);
+      }
+      return this.api.getStandings(sessionKey).pipe(
         catchError(() => of(null))
       );
     }),
@@ -61,6 +87,18 @@ export class ReplayFacade {
 
       return frame.drivers.find((driver) => driver.driverNumber === driverNumber) ?? frame.drivers[0] ?? null;
     })
+  );
+
+  readonly selectedDriverCareer$ = combineLatest([this.selectedSessionKey$, this.selectedDriverNumber$]).pipe(
+    switchMap(([sessionKey, driverNumber]) => {
+      if (sessionKey === null || driverNumber === null) {
+        return of(null);
+      }
+      return this.api.getDriverCareer(sessionKey, driverNumber).pipe(
+        catchError(() => of(null))
+      );
+    }),
+    startWith(null)
   );
 
   constructor(

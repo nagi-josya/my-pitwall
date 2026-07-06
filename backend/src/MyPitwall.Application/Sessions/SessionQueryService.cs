@@ -9,6 +9,8 @@ public sealed class SessionQueryService(IF1DataProvider dataProvider)
     {
         var sessions = await dataProvider.GetSessionsAsync(year, meetingKey, cancellationToken);
 
+        var now = DateTimeOffset.UtcNow;
+
         return sessions
             .OrderBy(session => session.StartDate)
             .Select(session => new SessionSummaryResponse(
@@ -18,7 +20,8 @@ public sealed class SessionQueryService(IF1DataProvider dataProvider)
                 session.CountryName,
                 session.Location,
                 session.SessionName,
-                session.StartDate))
+                session.StartDate,
+                session.EndDate.HasValue && session.EndDate < now))
             .ToList();
     }
 }

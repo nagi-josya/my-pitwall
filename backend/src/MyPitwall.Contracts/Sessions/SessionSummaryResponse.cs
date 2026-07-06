@@ -7,4 +7,5 @@ public sealed record SessionSummaryResponse(
     string CountryName,
     string Location,
     string SessionName,
-    DateTimeOffset? StartDate);
+    DateTimeOffset? StartDate,
+    bool IsCompleted);

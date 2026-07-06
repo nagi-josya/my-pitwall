@@ -6,6 +6,7 @@ public sealed record DriverFrameResponse(
     string FullName,
     string TeamName,
     string TeamColor,
+    string? HeadshotUrl,
     int? Position,
     string? GapToLeader,
     string? IntervalToCarAhead,
@@ -13,4 +14,8 @@ public sealed record DriverFrameResponse(
     string? TyreCompound,
     int? TyreAge,
     TrackPositionResponse? TrackPosition,
-    IReadOnlyList<TrackPositionResponse> Trail);
+    IReadOnlyList<TrackPositionResponse> Trail,
+    int? DebutYear,
+    int? Podiums,
+    int? HighestFinish,
+    IReadOnlyList<int>? ChampionshipYears);
