@@ -28,5 +28,5 @@ npm install
 npm start
 ```
 
-The frontend currently expects the backend API at `https://localhost:5170`.
+The frontend currently expects the backend API at `https://localhost:5170`..
 Use Node.js 18 or newer for the Angular app.
