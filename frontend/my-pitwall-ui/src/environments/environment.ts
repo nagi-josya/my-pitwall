@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:5170/api'
+  apiBaseUrl: 'https://my-pitwall-7b60.onbelmo.uk/api'
 };
