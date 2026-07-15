@@ -1,0 +1,11 @@
+frontend/
+docs/
+.git/
+node_modules/
+**/bin/
+**/obj/
+**/.vs/
+**/.angular/
+**/dist/
+*.user
+*.suo

@@ -42,7 +42,8 @@ In the Workers frontend (`frontend/my-pitwall-ui/src/environments/environment.ts
 
 | File | Purpose |
 |---|---|
-| `backend/Dockerfile` | Multi-stage .NET 8 build for Belmo |
+| `Dockerfile` | Multi-stage .NET 8 build (root, for Belmo auto-detection) |
+| `backend/Dockerfile` | Same build for local use (`docker build -f backend/Dockerfile backend/`) |
 
 ## Updating
 

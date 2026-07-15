@@ -86,7 +86,7 @@ GitHub Actions (`.github/workflows/deploy.yml`):
 
 ### Backend (Belmo.io)
 
-Deploy from GitHub: Belmo detects the `backend/Dockerfile`, builds the .NET 8 container, and serves with auto-HTTPS.
+Deploy from GitHub: root `Dockerfile` is auto-detected, builds the .NET 8 container, and serves with auto-HTTPS.
 
 Deploy steps at `deploy/README.md`. Key environment variables:
 - `Cors__AllowedOrigins__0` — Frontend Workers URL
