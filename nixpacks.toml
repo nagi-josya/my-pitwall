@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["dotnet-sdk_8"]
+
+[phases.install]
+cmds = ["dotnet restore backend/MyPitwall.sln"]
+
+[phases.build]
+cmds = ["dotnet publish backend/src/MyPitwall.Api/MyPitwall.Api.csproj -c Release -o out"]
+
+[start]
+cmd = "dotnet out/MyPitwall.Api.dll"
