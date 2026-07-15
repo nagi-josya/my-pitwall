@@ -2,6 +2,8 @@
 
 F1 historical replay tracker: .NET 8 backend + Angular 18 frontend + Cloudflare Pages.
 
+**Never commit or push to git. The user handles all version control manually.**
+
 ## Quick start
 
 ```powershell
